@@ -12,6 +12,11 @@ vr_var="VR1"
 int_var="em2"
 unit_var="100"
 
+v4="192.168.1.0"
+interface="em1"
+unit="0"
+mask="24"
+
 class TestJunOS_Connection(TestCase):
     def test_Constructor(self):
         c = JunOS_Connection()
@@ -47,3 +52,11 @@ class TestJunOS_Connection(TestCase):
     def test_vr(self):
         c=JunOS_Connection()
         c.vr(vr_var,int_var,unit_var)
+
+    def test_IPv4(self):
+        c=JunOS_Connection()
+        c.ipV4(v4, interface, unit, mask)
+    
+    def test_IPv6(self):
+        c=JunOS_Connection()
+        c.ipV6(v4, interface, unit, mask)

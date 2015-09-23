@@ -100,3 +100,22 @@ class JunOS_Connection():
         self._conf_JunOS.load(self.set_VR, format='set')
         self._conf_JunOS.load(self.set_int, format='set')
         self._conf_JunOS.commit()
+
+
+    def ipV4(self,v4, interface, unit, mask):
+        ip = v4 + "/" + mask
+        ip_list = (interface, unit, ip)
+
+        self.set_ip="set interfaces %s unit %s family inet address %s" % tuple(ip_list)
+        #T.insert(END, '\n' + self.set_ip)##logbox
+        self._conf_JunOS.load(self.set_ip, format='set')
+        self._conf_JunOS.commit()
+
+    def ipV6(self,v6, interface, unit, mask):
+        ip = v6 + "/" + mask
+        ip_list = (interface, unit, ip)
+
+        self.set_ip="set interfaces %s unit %s family inet address %s" % tuple(ip_list)
+        #T.insert(END, '\n' + self.set_ip)##logbox
+        self._conf_JunOS.load(self.set_ip, format='set')
+        self._conf_JunOS.commit()

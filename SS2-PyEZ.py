@@ -3,7 +3,6 @@
 ########################################################################
 
 import Tkinter as tk
-from pprint import pprint
 
 from net.PyEZ_Connect import JunOS_Connection
 
@@ -459,12 +458,76 @@ class Interfaces(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+        ## Labels and Entries ##
+
+        introlab = tk.Label(self,text="Select which interface and unit to work on")
+        introlab.grid(row=1,column=0, columnspan=4)
+        ## Interface ##
+        interlab= tk.Label(self,text="Interface")
+        interlab.grid(row=2,column=0)
+        self.interent = tk.Entry(self,width=5)
+        self.interent.grid(row=2,column=1,sticky='W')
+        ## Unit ##
+        unitlab = tk.Label(self,text="Unit")
+        unitlab.grid(row=3,column=0)
+        self.unitent= tk.Entry(self,width=5)
+        self.unitent.grid(row=3, column=1, sticky="W")
+        ## Ipv4 ##
+        v4label = tk.Label(self, text ="Add IPv4 Address" ) ## label
+        v4label.grid(row=4,column=0)
+        self.v4ent = tk.Entry(self, width=30) ## Entry
+        self.v4ent.grid(row=4,column=1)
+
+        ## Ipv4 Mask ##
+        v4masklab = tk.Label(self, text="/")
+        v4masklab.grid(row=4, column=2)
+        self.v4maskent = tk.Entry(self, width=3)
+        self.v4maskent.grid(row=4,column=4)
+
+        ## Ipv4 button ##
+        v4but = tk.Button(self, text="Commit",command=self.v4commit)
+        v4but.grid(row=4,column=5)
+
+        ## Ipv6 ##
+        v6label = tk.Label(self, text="Add IPv6 Address") ## Label
+        v6label.grid(row=5, column=0)
+        self.v6ent = tk.Entry(self,width=30) ## Entry
+        self.v6ent.grid(row=5, column=1)
+
+        ## Ipv6 Mask##
+        v6masklab = tk.Label(self, text="/")
+        v6masklab.grid(row=5, column=2)
+        self.v6maskent = tk.\
+        Entry(self, width=3)
+        self.v6maskent.grid(row=5,column=4)
+
+        ## Ipv6 Button ##
+        v6but = tk.Button(self, text="Commit",command=self.v6commit)
+        v6but.grid(row=5,column=5)
         label = tk.Label(self, text="INTERFACES", font=LARGE_FONT)
         label.grid(row=0, column=0)
 
         button1 = tk.Button(self, text="Next: Protocols",
                             command=lambda: controller.show_frame(Protocols))
-        button1.grid(row=1, column=0)
+        button1.grid(row=6, column=0)
+
+
+    #########################
+    #      IPv4 Commit      #
+    #########################
+
+    def v4commit(self):
+        JunOS_Connection().ipV4(self.v4ent.get(),self.interent.get(), self.unitent.get(),self.v4maskent.get())
+
+    #########################
+    #      IPv6 Commit      #
+    #########################
+
+    def v6commit(self, *args):
+        JunOS_Connection().ipV6(self.v6ent.get(),self.interent.get(), self.unitent.get(),self.v6maskent.get())
+
+
 
 #########################
 #       PROTOCOLS       #
