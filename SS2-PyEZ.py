@@ -548,84 +548,106 @@ class Firewalls(tk.Frame):
         label.grid(row=0, column=0, columnspan=3, sticky="W")
 
         self.controller=controller
-        self.fw_row=0
-        self.terms()
 
-        filter=tk.Label(self, text="Filter")
+        #####Filter Info
+        filter=tk.Label(self, text="Filter")    #Label
         filter.grid(row=1, column=0, sticky="W")
 
-        self.filter_ent=tk.Entry(self,width="15")
+        self.filter_ent=tk.Entry(self,width="15")#Entry
         self.filter_ent.grid(row=1, column=1)
 
+        #####Term Info
+        self.terms()
+
+        #####BUttons to CLear Field and Get new Info
         new_term_button=tk.Button(self,text="New Term",command=self.new_Term)
         new_term_button.grid(row=99, column=0, sticky="SW")
 
         new_filter_button=tk.Button(self,text="New Filter", command=self.new_Filter)
         new_filter_button.grid(row=99, column=1, sticky="SW")
 
-        button1 = tk.Button(self, text="Next: ROUTING PROTOCOLS", command=self.combi )
+        #####Commit and Go to Next Page
+        button1 = tk.Button(self, text="Next: ROUTING PROTOCOLS", command=self.fw_Commit )
         button1.grid(row=100, column=0, sticky="SW", columnspan=3)
 
+    #############
+    #   TERMS   #
+    #############
     def terms(self):
-
         term=tk.Label(self, text="Term")
-        term.grid(row=2+self.fw_row,column=0, sticky="W")
+        term.grid(row=2,column=0, sticky="W")
 
         self.term_Ent=tk.Entry(self,width=15)
-        self.term_Ent.grid(row=2+self.fw_row,column=1)
-
+        self.term_Ent.grid(row=2,column=1)
+        ######Get From-Then Fields
         self.from_then()
 
+    #################
+    #   FROM/THEN   #
+    #################
     def from_then(self):
-        from_lbl=tk.Label(self, text="From")
-        from_lbl.grid(row=2+2*self.fw_row,column=2)
+        #####FROM
+        from_lbl=tk.Label(self, text="From") ###Label
+        from_lbl.grid(row=2,column=2)
 
-        self.from_Ent=tk.Entry(self, width="20")
-        self.from_Ent.grid(row=2+2*self.fw_row,column=3)
+        self.from_Ent=tk.Entry(self, width="20") ###Entry 1
+        self.from_Ent.grid(row=2,column=3)
 
-        self.from_Ent2=tk.Entry(self, width="20")
-        self.from_Ent2.grid(row=2+2*self.fw_row,column=4)
+        self.from_Ent2=tk.Entry(self, width="20") ###Entry 2
+        self.from_Ent2.grid(row=2,column=4)
 
-        then_lbl=tk.Label(self, text="Then")
-        then_lbl.grid(row=3+2*self.fw_row,column=2)
+        then_lbl=tk.Label(self, text="Then")    ###Label
+        then_lbl.grid(row=3,column=2)
 
-        self.then_Ent=tk.Entry(self, width="20")
-        self.then_Ent.grid(row=3+2*self.fw_row,column=3)
+        self.then_Ent=tk.Entry(self, width="20") ###Entry
+        self.then_Ent.grid(row=3,column=3)
 
+        ######Commit Firewall and Clear Field
         new_from=tk.Button(self, text="Add From/Then", command=self.new_From)
-        new_from.grid(row=3+2*self.fw_row,column=4)
+        new_from.grid(row=3,column=4)
 
+    #########################
+    #   NEW FROM / THEN     #
+    #########################
     def new_From(self):
+        #####Commit
         JunOS_Connection().firewall(self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
                                     ,self.from_Ent2.get(),self.then_Ent.get())
-        print "COMMIT FROM/THEN"
+        ######Empty From/Then Fields
         self.from_Ent.delete(0, 'end')
         self.from_Ent2.delete(0, 'end')
         self.then_Ent.delete(0, 'end')
 
+    #################
+    #   NEW TERM    #
+    #################
     def new_Term(self):
+        ######Commit
         JunOS_Connection().firewall(self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
                                     ,self.from_Ent2.get(),self.then_Ent.get())
-        print "Commit Term"
+        #####CLEAR FIELDS UP TO TERM
         self.new_From()
         self.name_Ent.delete(0, 'end')
 
+    #################
+    #   NEW FILTER  #
+    #################
     def new_Filter(self):
+        #####Commit
         JunOS_Connection().firewall(self,self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
                                     ,self.from_Ent2.get(),self.then_Ent.get())
-        print ("Commit Filter")
+        ######Empty All Fields
         self.new_Term()
         self.filter_ent.delete(0,"end")
 
-    def combi(self):
-        self.fw_row+=1
-        #self.fw_Command()
-        self.filters()
 
-
-    def fw_Commit(self, controller):
-
+    def fw_Commit(self, **kwargs):
+        controller=self.controller
+        if len(self.filter_ent.get())!=0:
+            JunOS_Connection().firewall(self,self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
+                                        ,self.from_Ent2.get(),self.then_Ent.get())
         controller.show_frame(StartPage)
+
 #####################
 #   START PROGRAM   #
 #####################
