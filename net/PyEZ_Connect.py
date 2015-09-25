@@ -101,7 +101,6 @@ class JunOS_Connection():
         self._conf_JunOS.load(self.set_int, format='set')
         self._conf_JunOS.commit()
 
-
     def ipV4(self,v4, interface, unit, mask):
         ip = v4 + "/" + mask
         ip_list = (interface, unit, ip)
@@ -118,4 +117,17 @@ class JunOS_Connection():
         self.set_ip="set interfaces %s unit %s family inet address %s" % tuple(ip_list)
         #T.insert(END, '\n' + self.set_ip)##logbox
         self._conf_JunOS.load(self.set_ip, format='set')
+        self._conf_JunOS.commit()
+
+    def firewall(self,filter, term, from1, from2, then):
+        if len(from1)!=0:
+            from_List=[filter,term,from1,from2]
+            self.fw_From="set firewall filter %s term %s from %s %s" % tuple(from_List)
+            self._conf_JunOS.load(self.fw_From, format="set")
+
+        if len(then)!=0:
+            then_List=[filter,term,then]
+            self.fw_Then="set firewall filter %s term %s then %s" % tuple(then_List)
+            self._conf_JunOS.load(self.fw_Then, format="set")
+
         self._conf_JunOS.commit()

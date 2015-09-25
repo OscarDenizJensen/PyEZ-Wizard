@@ -12,10 +12,16 @@ vr_var="VR1"
 int_var="em2"
 unit_var="100"
 
-v4="192.168.1.0"
+v4="192.168.1.1"
 interface="em1"
 unit="0"
 mask="24"
+
+filter_name="F1"
+term="T1"
+from1="address"
+from2="192.168.1.1/30"
+then="accept"
 
 class TestJunOS_Connection(TestCase):
     def test_Constructor(self):
@@ -56,7 +62,11 @@ class TestJunOS_Connection(TestCase):
     def test_IPv4(self):
         c=JunOS_Connection()
         c.ipV4(v4, interface, unit, mask)
-    
+
     def test_IPv6(self):
         c=JunOS_Connection()
         c.ipV6(v4, interface, unit, mask)
+
+    def test_fw(self):
+        c=JunOS_Connection()
+        c.firewall(filter_name, term, from1, from2, then)

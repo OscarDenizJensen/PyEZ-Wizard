@@ -1,7 +1,3 @@
-########################################################################
-#layout=   http://pythonprogramming.net/change-show-new-frame-tkinter/ #
-########################################################################
-
 import Tkinter as tk
 
 from net.PyEZ_Connect import JunOS_Connection
@@ -39,7 +35,7 @@ class MainWindow(tk.Tk):
 
         #pages=()
 
-        for F in (StartPage, HostConf, MangConf, SysServ, Vlans,VRs, Interfaces, Protocols):
+        for F in (StartPage, HostConf, MangConf, SysServ, Vlans,VRs, Interfaces, Protocols, Firewalls):
 
             frame = F(container, self)
 
@@ -527,8 +523,6 @@ class Interfaces(tk.Frame):
     def v6commit(self, *args):
         JunOS_Connection().ipV6(self.v6ent.get(),self.interent.get(), self.unitent.get(),self.v6maskent.get())
 
-
-
 #########################
 #       PROTOCOLS       #
 #########################
@@ -539,10 +533,99 @@ class Protocols(tk.Frame):
         label = tk.Label(self, text="PROTOCOLS", font=LARGE_FONT)
         label.grid(row=0, column=0)
 
-        button1 = tk.Button(self, text="COMMIT",
-                            command=lambda: controller.show_frame(StartPage))
+        button1 = tk.Button(self, text="Next: FIREWALLS",
+                            command=lambda: controller.show_frame(Firewalls))
         button1.grid(row=1, column=0)
 
+#########################
+#       FIREWALL        #
+#########################
+class Firewalls(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="FIREWALLS", font=LARGE_FONT)
+        label.grid(row=0, column=0, columnspan=3, sticky="W")
+
+        self.controller=controller
+        self.fw_row=0
+        self.terms()
+
+        filter=tk.Label(self, text="Filter")
+        filter.grid(row=1, column=0, sticky="W")
+
+        self.filter_ent=tk.Entry(self,width="15")
+        self.filter_ent.grid(row=1, column=1)
+
+        new_term_button=tk.Button(self,text="New Term",command=self.new_Term)
+        new_term_button.grid(row=99, column=0, sticky="SW")
+
+        new_filter_button=tk.Button(self,text="New Filter", command=self.new_Filter)
+        new_filter_button.grid(row=99, column=1, sticky="SW")
+
+        button1 = tk.Button(self, text="Next: ROUTING PROTOCOLS", command=self.combi )
+        button1.grid(row=100, column=0, sticky="SW", columnspan=3)
+
+    def terms(self):
+
+        term=tk.Label(self, text="Term")
+        term.grid(row=2+self.fw_row,column=0, sticky="W")
+
+        self.term_Ent=tk.Entry(self,width=15)
+        self.term_Ent.grid(row=2+self.fw_row,column=1)
+
+        self.from_then()
+
+    def from_then(self):
+        from_lbl=tk.Label(self, text="From")
+        from_lbl.grid(row=2+2*self.fw_row,column=2)
+
+        self.from_Ent=tk.Entry(self, width="20")
+        self.from_Ent.grid(row=2+2*self.fw_row,column=3)
+
+        self.from_Ent2=tk.Entry(self, width="20")
+        self.from_Ent2.grid(row=2+2*self.fw_row,column=4)
+
+        then_lbl=tk.Label(self, text="Then")
+        then_lbl.grid(row=3+2*self.fw_row,column=2)
+
+        self.then_Ent=tk.Entry(self, width="20")
+        self.then_Ent.grid(row=3+2*self.fw_row,column=3)
+
+        new_from=tk.Button(self, text="Add From/Then", command=self.new_From)
+        new_from.grid(row=3+2*self.fw_row,column=4)
+
+    def new_From(self):
+        JunOS_Connection().firewall(self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
+                                    ,self.from_Ent2.get(),self.then_Ent.get())
+        print "COMMIT FROM/THEN"
+        self.from_Ent.delete(0, 'end')
+        self.from_Ent2.delete(0, 'end')
+        self.then_Ent.delete(0, 'end')
+
+    def new_Term(self):
+        JunOS_Connection().firewall(self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
+                                    ,self.from_Ent2.get(),self.then_Ent.get())
+        print "Commit Term"
+        self.new_From()
+        self.name_Ent.delete(0, 'end')
+
+    def new_Filter(self):
+        JunOS_Connection().firewall(self,self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
+                                    ,self.from_Ent2.get(),self.then_Ent.get())
+        print ("Commit Filter")
+        self.new_Term()
+        self.filter_ent.delete(0,"end")
+
+    def combi(self):
+        self.fw_row+=1
+        #self.fw_Command()
+        self.filters()
+
+
+    def fw_Commit(self, controller):
+
+        controller.show_frame(StartPage)
 #####################
 #   START PROGRAM   #
 #####################
