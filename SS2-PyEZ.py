@@ -35,7 +35,7 @@ class MainWindow(tk.Tk):
 
         #pages=()
 
-        for F in (StartPage, HostConf, MangConf, SysServ, Vlans,VRs, Interfaces, Protocols, Firewalls):
+        for F in (StartPage, HostConf, MangConf, SysServ, Vlans,VRs, Interfaces,Protocols,Classes, Users, Firewalls):
 
             frame = F(container, self)
 
@@ -593,8 +593,8 @@ class Protocols(tk.Frame):
         OSPF3but = tk.Button(self, text="Commit",command=self.OSPF3commit)
         OSPF3but.grid(row=6,column=6)
 
-        button1 = tk.Button(self, text="Next: FIREWALLS",
-                            command=lambda: controller.show_frame(Firewalls))
+        button1 = tk.Button(self, text="Next: CLASSES",
+                            command=lambda: controller.show_frame(Classes))
         button1.grid(row=10, column=0)
 
     #########################
@@ -606,6 +606,64 @@ class Protocols(tk.Frame):
 
     def OSPF3commit(self, *args):
         JunOS_Connection().OSPF3(self.ID3ent.get(),self.Area3ent.get(), self.Inter3ent.get(),self.unit3ent.get())
+
+#########################
+#       CLASSES         #
+#########################
+class Classes(tk.Frame):
+     def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="CLASSES", font=LARGE_FONT)
+        label.grid(row=0, column=0, columnspan=3)
+
+        #####CLASS NAME
+        name=tk.Label(self, text="Name")
+        name.grid(row=1, column=0)
+
+        self.name_Ent=tk.Entry(self, width="15")
+        self.name_Ent.grid(row=1, column=1)
+
+        ######CLASS ACTION
+        action=tk.Label(self, text="Action")
+        action.grid(row=1,column=2)
+
+        self.action_Ent=tk.Entry(self, width="15")
+        self.action_Ent.grid(row=1, column=3)
+
+        #######ACTION DETAIL
+        self.det_Ent=tk.Entry(self, width="15")
+        self.det_Ent.grid(row=1, column=4)
+
+        #######NEW CLASS BUTTON
+        class_Button=tk.Button(self, text="New Class/Actions", command=self.classes)
+        class_Button.grid(row=2, column=0)
+
+        #######NEXT PAGE BUTTON
+        button1 = tk.Button(self, text="Next: USERS",
+                                command=lambda: controller.show_frame(Users))
+        button1.grid(row=10, column=0)
+     #################
+     #   NEW CLASS   #
+     #################
+
+     def classes(self):
+        JunOS_Connection().classes(self.name_Ent.get(),self.action_Ent.get(),self.det_Ent.get())
+        self.name_Ent.delete(0,"end")
+        self.action_Ent.delete(0,"end")
+        self.det_Ent.delete(0,"end")
+
+#########################
+#       USERS           #
+#########################
+class Users(tk.Frame):
+     def __init__(self, parent, controller):
+            tk.Frame.__init__(self, parent)
+            label = tk.Label(self, text="CLASSES", font=LARGE_FONT)
+            label.grid(row=0, column=0, columnspan=3)
+
+            button1 = tk.Button(self, text="Next: FIREWALL",
+                                command=lambda: controller.show_frame(Firewalls))
+            button1.grid(row=10, column=0)
 
 #########################
 #       FIREWALL        #
