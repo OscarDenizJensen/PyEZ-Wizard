@@ -110,6 +110,16 @@ class JunOS_Connection():
         self._conf_JunOS.load(self.set_ip, format='set')
         self._conf_JunOS.commit()
 
+    def OSPF(self, routerid, area, interface):
+        self.set_id="set routing-options router-id %s" % routerid
+        ospflist = (area, interface)
+        self.set_ospf="set protocols ospf area %s interface %s" % tuple(ospflist)
+        self._conf_JunOS.load(self.set_id, format='set')
+        self._conf_JunOS.load(self.set_ospf, format='set')
+        self._conf_JunOS.commit()
+
+
+
     def ipV6(self,v6, interface, unit, mask):
         ip = v6 + "/" + mask
         ip_list = (interface, unit, ip)

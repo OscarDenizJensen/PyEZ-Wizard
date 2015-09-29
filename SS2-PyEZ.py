@@ -513,7 +513,7 @@ class Interfaces(tk.Frame):
     #      IPv4 Commit      #
     #########################
 
-    def v4commit(self):
+    def v4commit(self, *args):
         JunOS_Connection().ipV4(self.v4ent.get(),self.interent.get(), self.unitent.get(),self.v4maskent.get())
 
     #########################
@@ -531,12 +531,46 @@ class Protocols(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="PROTOCOLS", font=LARGE_FONT)
-        label.grid(row=0, column=0)
+        label.grid(row=0, column=0, columnspan=3)
+        ### Router ID ###
+        IDlab = tk.Label(self, text='Router ID')
+        IDlab.grid(row=1, column = 0)
+
+        #########################
+        #       OSPF            #
+        #########################
+        self.IDent = tk.Entry(self, width=10)
+        self.IDent.grid(row=1, column=1)
+        ## OSPF label ##
+        OSPFlab = tk.Label (self, text="OSPF")
+        OSPFlab.grid(row=2, column=0)
+        ## Area ##
+        Arealab = tk.Label(self, text="Area")
+        Arealab.grid(row=3, column=0)
+        self.Areaent = tk.Entry(self, width=10)
+        self.Areaent.grid(row=3, column=1)
+        ## Interface ##
+        Interlab = tk.Label(self, text="Interface")
+        Interlab.grid(row=3, column=2)
+        self.Interent = tk.Entry(self, width=10)
+        self.Interent.grid(row=3, column=3)
+        ## OSPF Button ##
+        OSPFbut = tk.Button(self, text="Commit",command=self.OSPFcommit)
+        OSPFbut.grid(row=3,column=5)
+
+
+
 
         button1 = tk.Button(self, text="Next: FIREWALLS",
                             command=lambda: controller.show_frame(Firewalls))
-        button1.grid(row=1, column=0)
+        button1.grid(row=5, column=0)
 
+    #########################
+    #      OSPF Commit      #
+    #########################
+
+    def OSPFcommit(self, *args):
+        JunOS_Connection().OSPF(self.IDent.get(),self.Areaent.get(), self.Interent.get())
 #########################
 #       FIREWALL        #
 #########################
