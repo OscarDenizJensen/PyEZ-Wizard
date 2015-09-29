@@ -532,18 +532,18 @@ class Protocols(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="PROTOCOLS", font=LARGE_FONT)
         label.grid(row=0, column=0, columnspan=3)
-        ### Router ID ###
+        ### Router ID ### (for ospf)
         IDlab = tk.Label(self, text='Router ID')
-        IDlab.grid(row=1, column = 0)
+        IDlab.grid(row=2, column = 0)
 
         #########################
         #       OSPF            #
         #########################
         self.IDent = tk.Entry(self, width=10)
-        self.IDent.grid(row=1, column=1)
+        self.IDent.grid(row=2, column=1)
         ## OSPF label ##
         OSPFlab = tk.Label (self, text="OSPF")
-        OSPFlab.grid(row=2, column=0)
+        OSPFlab.grid(row=1, column=0)
         ## Area ##
         Arealab = tk.Label(self, text="Area")
         Arealab.grid(row=3, column=0)
@@ -556,21 +556,56 @@ class Protocols(tk.Frame):
         self.Interent.grid(row=3, column=3)
         ## OSPF Button ##
         OSPFbut = tk.Button(self, text="Commit",command=self.OSPFcommit)
-        OSPFbut.grid(row=3,column=5)
+        OSPFbut.grid(row=3,column=6)
+        ## Unit ##
+        unitlab = tk.Label(self, text="Unit")
+        unitlab.grid(row=3, column=4)
+        self.unitent = tk.Entry(self, width=10)
+        self.unitent.grid(row=3, column=5)
 
-
+        #########################
+        #       OSPFv3          #
+        #########################
+        ### Router ID ### (for ospf)
+        ID3lab = tk.Label(self, text='Router ID')
+        ID3lab.grid(row=5, column = 0)
+        self.ID3ent = tk.Entry(self, width=10)
+        self.ID3ent.grid(row=5, column=1)
+        OSPF3lab = tk.Label (self, text="OSPF3")
+        OSPF3lab.grid(row=4, column=0)
+        ## Area ##
+        Area3lab = tk.Label(self, text="Area")
+        Area3lab.grid(row=6, column=0)
+        self.Area3ent = tk.Entry(self, width=10)
+        self.Area3ent.grid(row=6, column=1)
+        ## Interface ##
+        Inter3lab = tk.Label(self, text="Interface")
+        Inter3lab.grid(row=6, column=2)
+        self.Inter3ent = tk.Entry(self, width=10)
+        self.Inter3ent.grid(row=6, column=3)
+        ## Unit ##
+        unit3lab = tk.Label(self, text="Unit")
+        unit3lab.grid(row=6, column=4)
+        self.unit3ent = tk.Entry(self, width=10)
+        self.unit3ent.grid(row=6, column=5)
+        ## OSPF Button ##
+        OSPF3but = tk.Button(self, text="Commit",command=self.OSPF3commit)
+        OSPF3but.grid(row=6,column=6)
 
 
         button1 = tk.Button(self, text="Next: FIREWALLS",
                             command=lambda: controller.show_frame(Firewalls))
-        button1.grid(row=5, column=0)
+        button1.grid(row=10, column=0)
 
     #########################
     #      OSPF Commit      #
     #########################
 
     def OSPFcommit(self, *args):
-        JunOS_Connection().OSPF(self.IDent.get(),self.Areaent.get(), self.Interent.get())
+        JunOS_Connection().OSPF(self.IDent.get(),self.Areaent.get(), self.Interent.get(),self.unitent.get())
+
+    def OSPF3commit(self, *args):
+        JunOS_Connection().OSPF3(self.ID3ent.get(),self.Area3ent.get(), self.Inter3ent.get(),self.unit3ent.get())
 #########################
 #       FIREWALL        #
 #########################
