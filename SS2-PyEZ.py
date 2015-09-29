@@ -507,7 +507,7 @@ class Interfaces(tk.Frame):
     #      IPv4 Commit      #
     #########################
 
-    def v4commit(self):
+    def v4commit(self, *args):
         JunOS_Connection().ipV4(self.v4ent.get(),self.interent.get(), self.unitent.get(),self.v4maskent.get())
 
     #########################
@@ -554,6 +554,7 @@ class Protocols(tk.Frame):
 
 
 
+<<<<<<< HEAD
 
         button1 = tk.Button(self, text="Next: CLASSES",
                              command=lambda: controller.show_frame(Classes))
@@ -631,11 +632,19 @@ class Users(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Firewalls", font=LARGE_FONT)
         label.grid(row=0, column=0)
+=======
+>>>>>>> 2682263433c1ae68bb47ba2ca7e98fa33895dece
 
         button1 = tk.Button(self, text="Next: FIREWALLS",
                             command=lambda: controller.show_frame(Firewalls))
-        button1.grid(row=1, column=0)
+        button1.grid(row=5, column=0)
 
+    #########################
+    #      OSPF Commit      #
+    #########################
+
+    def OSPFcommit(self, *args):
+        JunOS_Connection().OSPF(self.IDent.get(),self.Areaent.get(), self.Interent.get())
 #########################
 #       FIREWALL        #
 #########################
