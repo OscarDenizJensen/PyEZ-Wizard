@@ -23,6 +23,10 @@ from1="address"
 from2="192.168.1.1/30"
 then="accept"
 
+name="Per"
+action="allow-command"
+detail="ssh"
+
 class TestJunOS_Connection(TestCase):
     def test_Constructor(self):
         c = JunOS_Connection()
@@ -66,6 +70,10 @@ class TestJunOS_Connection(TestCase):
     def test_IPv6(self):
         c=JunOS_Connection()
         c.ipV6(v4, interface, unit, mask)
+
+    def test_Classes(self):
+        c=JunOS_Connection()
+        c.classes(name,action,detail)
 
     def test_fw(self):
         c=JunOS_Connection()
