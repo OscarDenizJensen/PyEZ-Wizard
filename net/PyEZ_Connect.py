@@ -110,12 +110,24 @@ class JunOS_Connection():
         self._conf_JunOS.load(self.set_ip, format='set')
         self._conf_JunOS.commit()
 
-    def OSPF(self, routerid, area, interface):
+    def OSPF(self, routerid, area, interface, unit):
         self.set_id="set routing-options router-id %s" % routerid
-        ospflist = (area, interface)
-        self.set_ospf="set protocols ospf area %s interface %s" % tuple(ospflist)
+        ospflist = (area, interface, unit)
+        self.set_ospf="set protocols ospf area %s interface %s.%s" % tuple(ospflist)
         self._conf_JunOS.load(self.set_id, format='set')
         self._conf_JunOS.load(self.set_ospf, format='set')
+        self._conf_JunOS.commit()
+
+
+
+    def OSPF3(self, routerid, area, interface, unit):
+        self.set_id="set routing-options router-id %s" % routerid
+        ospflist = (area, interface, unit)
+        self.set_lo0="set protocols ospf3 area 0 interface lo0.0 passive"
+        self.set_ospf3="set protocols ospf3 area %s interface %s.%s" % tuple(ospflist)
+        self._conf_JunOS.load(self.set_id, format='set')
+        self._conf_JunOS.load(self.set_lo0, format='set')
+        self._conf_JunOS.load(self.set_ospf3, format='set')
         self._conf_JunOS.commit()
 
 
@@ -124,7 +136,7 @@ class JunOS_Connection():
         ip = v6 + "/" + mask
         ip_list = (interface, unit, ip)
 
-        self.set_ip="set interfaces %s unit %s family inet address %s" % tuple(ip_list)
+        self.set_ip="set interfaces %s unit %s family inet6 address %s" % tuple(ip_list)
         #T.insert(END, '\n' + self.set_ip)##logbox
         self._conf_JunOS.load(self.set_ip, format='set')
         self._conf_JunOS.commit()
