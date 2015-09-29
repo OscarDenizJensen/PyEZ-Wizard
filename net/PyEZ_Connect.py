@@ -119,6 +119,21 @@ class JunOS_Connection():
         self._conf_JunOS.load(self.set_ip, format='set')
         self._conf_JunOS.commit()
 
+    def OSPF(self, routerid, area, interface):
+        self.set_id="set routing-options router-id %s" % routerid
+        ospflist = (area, interface)
+        self.set_ospf="set protocols ospf area %s interface %s" % tuple(ospflist)
+        self._conf_JunOS.load(self.set_id, format='set')
+        self._conf_JunOS.load(self.set_ospf, format='set')
+        self._conf_JunOS.commit()
+
+    def classes(self, name, permission, detail):
+        if len(permission)!=0:
+            class_List=[name,permission,detail]
+            self.class_Set="set system login class %s %s %s" % tuple(class_List)
+            self._conf_JunOS.load(self.class_Set, format="set")
+        self._conf_JunOS.commit()
+
     def firewall(self,filter, term, from1, from2, then):
         if len(from1)!=0:
             from_List=[filter,term,from1,from2]
@@ -131,3 +146,6 @@ class JunOS_Connection():
             self._conf_JunOS.load(self.fw_Then, format="set")
 
         self._conf_JunOS.commit()
+
+    def show(self):
+        print self.dev_Connect.cli("show configuration")

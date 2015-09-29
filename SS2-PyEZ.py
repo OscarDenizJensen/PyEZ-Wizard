@@ -1,4 +1,5 @@
 import Tkinter as tk
+from ScrolledText import *
 
 from net.PyEZ_Connect import JunOS_Connection
 
@@ -10,15 +11,6 @@ LARGE_FONT= ("Verdana", 12)
 class MainWindow(tk.Tk):
 
     def __init__(self, *args, **kwargs):
-        ####################################
-        #Connect To Junos Connection Class #
-        ####################################
-        # self.main_connection=JunOS_Connection
-        # self.connect=self.main_connection()
-
-        #cu=Config(self.main_connection)
-        #cu.rescue(self,action="load")
-
         #####################################
         #           Launch GUI              #
         #####################################
@@ -31,11 +23,13 @@ class MainWindow(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
+        self.log_Box=ScrolledText(container, width=50, height=20)
+        self.log_Box.grid(row=0, column=100,sticky="E")
+
         self.frames = {}
 
-        #pages=()
-
-        for F in (StartPage, HostConf, MangConf, SysServ, Vlans,VRs, Interfaces, Protocols, Firewalls):
+        for F in (StartPage, HostConf, MangConf, SysServ, Vlans,VRs, Interfaces,
+                  Protocols, Classes, Users, Firewalls):
 
             frame = F(container, self)
 
@@ -114,9 +108,9 @@ class MangConf(tk.Frame):
                             command=lambda: controller.show_frame(SysServ))
         button1.grid(row=1, column=0)
 
-#####################################
-#   System Services Configurations  #
-#####################################
+######################
+#   SYSTEM SERVICES  #
+######################
 class SysServ(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -531,6 +525,111 @@ class Protocols(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="PROTOCOLS", font=LARGE_FONT)
+        label.grid(row=0, column=0, columnspan=3)
+        ### Router ID ###
+        IDlab = tk.Label(self, text='Router ID')
+        IDlab.grid(row=1, column = 0)
+
+        #########################
+        #       OSPF            #
+        #########################
+        self.IDent = tk.Entry(self, width=10)
+        self.IDent.grid(row=1, column=1)
+        ## OSPF label ##
+        OSPFlab = tk.Label (self, text="OSPF")
+        OSPFlab.grid(row=2, column=0)
+        ## Area ##
+        Arealab = tk.Label(self, text="Area")
+        Arealab.grid(row=3, column=0)
+        self.Areaent = tk.Entry(self, width=10)
+        self.Areaent.grid(row=3, column=1)
+        ## Interface ##
+        Interlab = tk.Label(self, text="Interface")
+        Interlab.grid(row=3, column=2)
+        self.Interent = tk.Entry(self, width=10)
+        self.Interent.grid(row=3, column=3)
+        ## OSPF Button ##
+        OSPFbut = tk.Button(self, text="Commit",command=self.OSPFcommit)
+        OSPFbut.grid(row=3,column=5)
+
+
+
+
+        button1 = tk.Button(self, text="Next: CLASSES",
+                             command=lambda: controller.show_frame(Classes))
+
+        button1.grid(row=5, column=0)
+
+    #########################
+    #      OSPF Commit      #
+    #########################
+
+    def OSPFcommit(self, *args):
+        JunOS_Connection().OSPF(self.IDent.get(),self.Areaent.get(), self.Interent.get())
+
+#########################
+#       CLASSES         #
+#########################
+class Classes(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="CLASSES", font=LARGE_FONT)
+        label.grid(row=0, column=0)
+
+        #####Class Name
+        self.name=tk.Label(self, text="NAME:")  ###Label
+        self.name.grid(row=1, column=0)
+
+        self.name_Ent=tk.Entry(self, width="15")    ###Entry
+        self.name_Ent.grid(row=1, column=1)
+        ####Class Permissions
+        self.action=tk.Label(self, text="Permission")   ###Label
+        self.action.grid(row=1, column=2)
+
+        self.action_Ent=tk.Entry(self,width="15")   ###Entry
+        self.action_Ent.grid(row=1, column=3)
+
+        ####Details of Permissions
+        self.action_Choice=tk.Label(self, text="Detail") ###Label
+        self.action_Choice.grid(row=1, column=4)
+
+        self.action_Choice_Ent=tk.Entry(self, width="15")###Entry
+        self.action_Choice_Ent.grid(row=1, column=5)
+
+        ###Commit Buttons
+        new_Permission=tk.Button(self, text="New Permission", command=self.new_Perm)
+        new_Permission.grid(row=2,column=0)
+
+        new_Class_Button=tk.Button(self, text="New Class", command=self.new_Class)
+        new_Class_Button.grid(row=2, column=1)
+
+        ####Next Page
+        button1 = tk.Button(self, text="Next: Users",
+                            command=lambda: controller.show_frame(Users))
+        button1.grid(row=3, column=0)
+    #########################
+    #   Get new Permissions #
+    #########################
+    def new_Perm(self):
+        JunOS_Connection().classes(self.name_Ent.get(),self.action_Ent.get(), self.action_Choice_Ent.get())
+        self.action_Ent.delete(0, 'end')
+        self.action_Choice_Ent.delete(0, 'end')
+    #########################
+    #   Get New Class       #
+    #########################
+    def new_Class(self):
+        JunOS_Connection().classes(self.name_Ent.get(),self.action_Ent.get(), self.action_Choice_Ent.get())
+        self.action_Ent.delete(0, 'end')
+        self.action_Choice_Ent.delete(0, 'end')
+        self.name_Ent.delete(0,'end')
+
+#########################
+#       USERS           #
+#########################
+class Users(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Firewalls", font=LARGE_FONT)
         label.grid(row=0, column=0)
 
         button1 = tk.Button(self, text="Next: FIREWALLS",
