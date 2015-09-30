@@ -1,4 +1,5 @@
 import Tkinter as tk
+import ScrolledText as tkst
 
 from net.PyEZ_Connect import JunOS_Connection
 
@@ -10,15 +11,6 @@ LARGE_FONT= ("Verdana", 12)
 class MainWindow(tk.Tk):
 
     def __init__(self, *args, **kwargs):
-        ####################################
-        #Connect To Junos Connection Class #
-        ####################################
-        # self.main_connection=JunOS_Connection
-        # self.connect=self.main_connection()
-
-        #cu=Config(self.main_connection)
-        #cu.rescue(self,action="load")
-
         #####################################
         #           Launch GUI              #
         #####################################
@@ -99,6 +91,11 @@ class HostConf(tk.Frame):
     #########################
     def hostcommit(self):
         JunOS_Connection().hostcommit(self.hostentry.get())
+        log_Info=str(JunOS_Connection().show())
+        log_box=tkst.ScrolledText(self, width=50, height=40)
+        log_box.grid(row=1, column=10, rowspan=20, columnspan=20)
+        log_box.insert("insert",log_Info)
+
 
 #############################################
 #   Mangagement Interface Configurations    #
@@ -657,13 +654,57 @@ class Classes(tk.Frame):
 #########################
 class Users(tk.Frame):
      def __init__(self, parent, controller):
-            tk.Frame.__init__(self, parent)
-            label = tk.Label(self, text="CLASSES", font=LARGE_FONT)
-            label.grid(row=0, column=0, columnspan=3)
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="USERS", font=LARGE_FONT)
+        label.grid(row=0, column=0, columnspan=3)
 
-            button1 = tk.Button(self, text="Next: FIREWALL",
-                                command=lambda: controller.show_frame(Firewalls))
-            button1.grid(row=10, column=0)
+        ####User Name
+        user=tk.Label(self, text="User")
+        user.grid(row=1, column=0)
+
+        self.user_Ent=tk.Entry(self, width="15")
+        self.user_Ent.grid(row=1, column=1)
+
+        #####Class Name
+        cls=tk.Label(self, text="Class")
+        cls.grid(row=1, column=2)
+
+        self.cls_Ent=tk.Entry(self, width="15")
+        self.cls_Ent.grid(row=1, column=3)
+
+        #####Password
+        pass1=tk.Label(self, text="Enter Password")
+        pass1.grid(row=2, column=0)
+
+        self.pass1_Ent=tk.Entry(self, width="15")
+        self.pass1_Ent.grid(row=2, column=1)
+
+        #####Re-Enter Pass
+        pass2=tk.Label(self, text="Re-Enter Password")
+        pass2.grid(row=3, column=0)
+
+        self.pass2_Ent=tk.Entry(self, width="15")
+        self.pass2_Ent.grid(row=3, column=1)
+
+        ####NEW USER BUTTON
+        new_Usr=tk.Button(self, text="New User", command=self.new_User)
+        new_Usr.grid(row=5, column=0)
+
+        button1 = tk.Button(self, text="Next: FIREWALL",
+                            command=lambda: controller.show_frame(Firewalls))
+        button1.grid(row=10, column=0)
+
+     def new_User(self):
+         if self.pass1_Ent.get()== self.pass2_Ent.get():
+             JunOS_Connection().users(self.user_Ent.get(),self.cls_Ent.get(),self.pass1_Ent.get())
+         else:
+             err_mss=tk.Label(self, text="Passwords DO NOT match")
+             err_mss.grid(row=4, column=0, columnspan=4)
+
+             self.user_Ent.delete(0,'end')
+             self.cls_Entry.delete(0,'end')
+             self.pass1.delete(0,'end')
+             self.pass2.delete(0,'end')
 
 #########################
 #       FIREWALL        #

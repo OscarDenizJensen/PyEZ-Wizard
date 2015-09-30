@@ -27,6 +27,10 @@ name="Per"
 action="allow-command"
 detail="ssh"
 
+user="Test_User"
+class_Name="Test_Class"
+pass1="123456"
+
 class TestJunOS_Connection(TestCase):
     def test_Constructor(self):
         c = JunOS_Connection()
@@ -74,6 +78,10 @@ class TestJunOS_Connection(TestCase):
     def test_Classes(self):
         c=JunOS_Connection()
         c.classes(name,action,detail)
+
+    def test_user(self):
+        c=JunOS_Connection()
+        c.users(user, class_Name, pass1)
 
     def test_fw(self):
         c=JunOS_Connection()

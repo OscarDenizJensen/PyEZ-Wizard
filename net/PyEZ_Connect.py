@@ -145,6 +145,13 @@ class JunOS_Connection():
 
         self._conf_JunOS.commit()
 
+    def users(self, user, class_Name, pass1):
+        user_info=[user,class_Name,pass1]
+        self.user_set="set system login user %s class % " \
+                      "authentication plain-text-password-value %s" % tuple(user_info)
+        self._conf_JunOS.load(self.user_set, format="set")
+        self._conf_JunOS.commit()
+
     def firewall(self,filter, term, from1, from2, then):
         if len(from1)!=0:
             from_List=[filter,term,from1,from2]
