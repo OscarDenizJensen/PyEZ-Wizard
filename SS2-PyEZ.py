@@ -16,20 +16,21 @@ class MainWindow(tk.Tk):
         #####################################
         tk.Tk.__init__(self, *args, **kwargs)
 
-        container = tk.Frame(self)
+        self.container = tk.Frame(self)
 
-        container.pack(side="top", fill="both", expand = True)
+        self.container.pack(side="top", fill="both", expand = True)
 
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
+
 
         #pages=()
 
         for F in (StartPage, HostConf, MangConf, SysServ, Vlans,VRs, Interfaces,Protocols,Classes, Users, Firewalls):
 
-            frame = F(container, self)
+            frame = F(self.container, self)
 
             self.frames[F] = frame
 
@@ -37,10 +38,35 @@ class MainWindow(tk.Tk):
 
         self.show_frame(StartPage)
 
+        self.logBox()
+
     def show_frame(self, cont):
 
         frame = self.frames[cont]
         frame.tkraise()
+
+    #####################
+    #   CREATE LOG BOX  #
+    #####################
+    def logBox(self):
+        #####Log Box
+        self.logbox=tkst.ScrolledText(self.container, width=50, height=30 )
+        self.logbox.grid(row=0, column=1)
+
+        #####Update Button
+        log_update=tk.Button(self.container, text="Update Log", command=self.update_log)
+        log_update.grid(row=1, column=1)
+
+    #####################
+    #   UPDATE LOG BOX  #
+    #####################
+    def update_log(self):
+        #####Clear Box
+        self.logbox.delete(0.1,"end")
+        #####Get Config
+        update=str(JunOS_Connection().show())
+        #####Insert Config
+        self.logbox.insert("insert",update)
 
 #########################
 #   Class Start Page    #
@@ -69,8 +95,10 @@ class HostConf(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="HOST CONFIGURATIONS", font=LARGE_FONT)
         hostlabel = tk.Label(self,text='Enter a hostname for your system') # Text in GUI
+
         ###########Entry Field#############
         self.hostentry = tk.Entry(self,width=10) # Insert field
+
         ###########Button to Commit Host Name############
         hostbutton = tk.Button(self,text='Commit', command=self.hostcommit)
         hostlabel.grid(row=1,column=0)
@@ -91,10 +119,6 @@ class HostConf(tk.Frame):
     #########################
     def hostcommit(self):
         JunOS_Connection().hostcommit(self.hostentry.get())
-        log_Info=str(JunOS_Connection().show())
-        log_box=tkst.ScrolledText(self, width=50, height=40)
-        log_box.grid(row=1, column=10, rowspan=40, columnspan=20)
-        log_box.insert("insert",log_Info)
 
 #############################################
 #   Mangagement Interface Configurations    #
@@ -284,7 +308,6 @@ class SysServ(tk.Frame):
         new_Srv_But=tk.Button(self,text="New Server", command=self.dhcp_combi)
         new_Srv_But.grid(row=(9+4*self.r), column=9)
 
-
     ###############################################
     #   CREATE DHCP SERVERS & COMMIT PREVIOUS ONE #
     ###############################################
@@ -416,12 +439,6 @@ class VRs(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        log_Info=str(JunOS_Connection().show())
-        log_box=tkst.ScrolledText(self, width=50, height=40)
-        log_box.grid(row=1, column=10, rowspan=10, columnspan=10)
-        log_box.insert("insert",log_Info)
-
-
         label = tk.Label(self, text="VIRTUAL ROUTERS", font=LARGE_FONT)
         label.grid(row=0, column=0, columnspan=3)
         ##### Labels and Entry fields #####
@@ -450,10 +467,7 @@ class VRs(tk.Frame):
 
     def vrcommit(self):
         JunOS_Connection().vr(self.VREntry.get(), self.IntEntry.get(), self.UnitEnt.get())
-        log_Info=str(JunOS_Connection().show())
-        log_box=tkst.ScrolledText(self, width=50, height=40)
-        log_box.grid(row=1, column=10, rowspan=10, columnspan=10)
-        log_box.insert("insert",log_Info)
+
 #########################
 #       INTERFACES      #
 #########################
@@ -461,11 +475,6 @@ class Interfaces(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
-        log_Info=str(JunOS_Connection().show())
-        log_box=tkst.ScrolledText(self, width=50, height=40)
-        log_box.grid(row=1, column=10, rowspan=40, columnspan=20)
-        log_box.insert("insert",log_Info)
 
         ## Labels and Entries ##
 
@@ -527,10 +536,6 @@ class Interfaces(tk.Frame):
 
     def v4commit(self, *args):
         JunOS_Connection().ipV4(self.v4ent.get(),self.interent.get(), self.unitent.get(),self.v4maskent.get())
-        log_Info=str(JunOS_Connection().show())
-        log_box=tkst.ScrolledText(self, width=50, height=40)
-        log_box.grid(row=1, column=10, rowspan=40, columnspan=20)
-        log_box.insert("insert",log_Info)
     #########################
     #      IPv6 Commit      #
     #########################

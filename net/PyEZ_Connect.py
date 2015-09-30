@@ -110,6 +110,15 @@ class JunOS_Connection():
         self._conf_JunOS.load(self.set_ip, format='set')
         self._conf_JunOS.commit()
 
+    def ipV6(self,v6, interface, unit, mask):
+        ip = v6 + "/" + mask
+        ip_list = (interface, unit, ip)
+
+        self.set_ip="set interfaces %s unit %s family inet6 address %s" % tuple(ip_list)
+        #T.insert(END, '\n' + self.set_ip)##logbox
+        self._conf_JunOS.load(self.set_ip, format='set')
+        self._conf_JunOS.commit()
+
     def OSPF(self, routerid, area, interface, unit):
         self.set_id="set routing-options router-id %s" % routerid
         ospflist = (area, interface, unit)
@@ -126,8 +135,6 @@ class JunOS_Connection():
         self._conf_JunOS.load(self.set_protocol, format='set')
         self._conf_JunOS.commit()
 
-
-
     def ISO(self, iso):
         self.set_security="set security forwarding-options family iso mode packet-based"
         self.set_lo0="set interfaces lo0 unit 0 family iso address %s" % iso
@@ -137,7 +144,6 @@ class JunOS_Connection():
         self._conf_JunOS.load(self.set_lo_int, format='set')
         self._conf_JunOS.commit()
 
-
     def OSPF3(self, routerid, area, interface, unit):
         self.set_id="set routing-options router-id %s" % routerid
         ospflist = (area, interface, unit)
@@ -146,15 +152,6 @@ class JunOS_Connection():
         self._conf_JunOS.load(self.set_id, format='set')
         self._conf_JunOS.load(self.set_lo0, format='set')
         self._conf_JunOS.load(self.set_ospf3, format='set')
-        self._conf_JunOS.commit()
-
-    def ipV6(self,v6, interface, unit, mask):
-        ip = v6 + "/" + mask
-        ip_list = (interface, unit, ip)
-
-        self.set_ip="set interfaces %s unit %s family inet6 address %s" % tuple(ip_list)
-        #T.insert(END, '\n' + self.set_ip)##logbox
-        self._conf_JunOS.load(self.set_ip, format='set')
         self._conf_JunOS.commit()
 
     def classes(self, name, action, detail):
