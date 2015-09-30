@@ -540,7 +540,7 @@ class Protocols(tk.Frame):
         self.IDent.grid(row=2, column=1)
         ## OSPF label ##
         OSPFlab = tk.Label (self, text="OSPF")
-        OSPFlab.grid(row=2, column=0)
+        OSPFlab.grid(row=1, column=0)
         ## Area ##
         Arealab = tk.Label(self, text="Area")
         Arealab.grid(row=3, column=0)
@@ -590,19 +590,52 @@ class Protocols(tk.Frame):
         OSPF3but = tk.Button(self, text="Commit",command=self.OSPF3commit)
         OSPF3but.grid(row=6,column=6)
 
+        #########################
+        #       ISIS            #
+        #########################
+
+        ISLab = tk.Label(self, text="IS-IS")
+        ISLab.grid(row=7,column=0)
+        Lo0Lab = tk.Label(self, text="Lo0 ISO Address")
+        Lo0Lab.grid(row=8,column=0)
+        self.Lo0ent = tk.Entry(self,width=30)
+        self.Lo0ent.grid(row=8, column=1, columnspan=3)
+        ISObut = tk.Button(self, text="Commit",command=self.ISOcommit)
+        ISObut.grid(row=8,column=4)
+        ## Interface ##
+        isInterlab = tk.Label(self, text="Interface")
+        isInterlab.grid(row=9, column=0)
+        self.isInterent = tk.Entry(self, width=10)
+        self.isInterent.grid(row=9, column=1)
+        ## Unit ##
+        isunitlab = tk.Label(self, text="Unit")
+        isunitlab.grid(row=9, column=2)
+        self.isunitent = tk.Entry(self, width=10)
+        self.isunitent.grid(row=9, column=3)
+        ## ISIS Button ##
+        ISObut = tk.Button(self, text="Commit",command=self.ISIScommit)
+        ISObut.grid(row=9,column=4)
+
+
         button1 = tk.Button(self, text="Next: CLASSES",
                             command=lambda: controller.show_frame(Classes))
         button1.grid(row=10, column=0)
 
-    #########################
-    #      OSPF Commit      #
-    #########################
+    ##############################
+    #OSPF, OSPF3 and ISIS Commit #
+    ##############################
 
     def OSPFcommit(self, *args):
         JunOS_Connection().OSPF(self.IDent.get(),self.Areaent.get(), self.Interent.get(),self.unitent.get())
 
     def OSPF3commit(self, *args):
         JunOS_Connection().OSPF3(self.ID3ent.get(),self.Area3ent.get(), self.Inter3ent.get(),self.unit3ent.get())
+
+    def ISIScommit(self,*args):
+        JunOS_Connection().ISIS(self.isInterent.get(),self.isunitent.get())
+
+    def ISOcommit(self, *args):
+        JunOS_Connection().ISO(self.Lo0ent.get())
 
 #########################
 #       CLASSES         #

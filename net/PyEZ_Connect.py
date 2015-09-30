@@ -118,6 +118,26 @@ class JunOS_Connection():
         self._conf_JunOS.load(self.set_ospf, format='set')
         self._conf_JunOS.commit()
 
+    def ISIS(self,interface, unit):
+        islist=(interface, unit)
+        self.set_family="set interfaces %s unit %s family iso" % tuple(islist)
+        self.set_protocol="set protocols isis interface %s.%s" % tuple(islist)
+        self._conf_JunOS.load(self.set_family, format='set')
+        self._conf_JunOS.load(self.set_protocol, format='set')
+        self._conf_JunOS.commit()
+
+
+
+    def ISO(self, iso):
+        self.set_security="set security forwarding-options family iso mode packet-based"
+        self.set_lo0="set interfaces lo0 unit 0 family iso address %s" % iso
+        self.set_lo_int="set protocols isis interface lo0.0"
+        # self._conf_JunOS.load(self.set_security, format='set')
+        self._conf_JunOS.load(self.set_lo0, format='set')
+        self._conf_JunOS.load(self.set_lo_int, format='set')
+        self._conf_JunOS.commit()
+
+
     def OSPF3(self, routerid, area, interface, unit):
         self.set_id="set routing-options router-id %s" % routerid
         ospflist = (area, interface, unit)
