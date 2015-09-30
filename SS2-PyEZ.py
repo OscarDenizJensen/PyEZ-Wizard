@@ -93,9 +93,8 @@ class HostConf(tk.Frame):
         JunOS_Connection().hostcommit(self.hostentry.get())
         log_Info=str(JunOS_Connection().show())
         log_box=tkst.ScrolledText(self, width=50, height=40)
-        log_box.grid(row=1, column=10, rowspan=20, columnspan=20)
+        log_box.grid(row=1, column=10, rowspan=40, columnspan=20)
         log_box.insert("insert",log_Info)
-
 
 #############################################
 #   Mangagement Interface Configurations    #
@@ -333,6 +332,7 @@ class SysServ(tk.Frame):
         if dhcp_Value==1:
             self.dhcp_Command()
         #lambda: controller.show_frame(Vlans)
+
         controller.show_frame(Vlans)
 
 ####################
@@ -415,6 +415,13 @@ class VRs(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+        log_Info=str(JunOS_Connection().show())
+        log_box=tkst.ScrolledText(self, width=50, height=40)
+        log_box.grid(row=1, column=10, rowspan=10, columnspan=10)
+        log_box.insert("insert",log_Info)
+
+
         label = tk.Label(self, text="VIRTUAL ROUTERS", font=LARGE_FONT)
         label.grid(row=0, column=0, columnspan=3)
         ##### Labels and Entry fields #####
@@ -443,7 +450,10 @@ class VRs(tk.Frame):
 
     def vrcommit(self):
         JunOS_Connection().vr(self.VREntry.get(), self.IntEntry.get(), self.UnitEnt.get())
-
+        log_Info=str(JunOS_Connection().show())
+        log_box=tkst.ScrolledText(self, width=50, height=40)
+        log_box.grid(row=1, column=10, rowspan=10, columnspan=10)
+        log_box.insert("insert",log_Info)
 #########################
 #       INTERFACES      #
 #########################
@@ -451,6 +461,11 @@ class Interfaces(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+        log_Info=str(JunOS_Connection().show())
+        log_box=tkst.ScrolledText(self, width=50, height=40)
+        log_box.grid(row=1, column=10, rowspan=40, columnspan=20)
+        log_box.insert("insert",log_Info)
 
         ## Labels and Entries ##
 
@@ -512,7 +527,10 @@ class Interfaces(tk.Frame):
 
     def v4commit(self, *args):
         JunOS_Connection().ipV4(self.v4ent.get(),self.interent.get(), self.unitent.get(),self.v4maskent.get())
-
+        log_Info=str(JunOS_Connection().show())
+        log_box=tkst.ScrolledText(self, width=50, height=40)
+        log_box.grid(row=1, column=10, rowspan=40, columnspan=20)
+        log_box.insert("insert",log_Info)
     #########################
     #      IPv6 Commit      #
     #########################
