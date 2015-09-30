@@ -5,19 +5,36 @@ from net.PyEZ_Connect import JunOS_Connection
 class Log_box:
     root=tk.Tk()
 
-    frame=tk.Frame(root)
-    frame.grid(row=0,column=0)
+    #########################
+    #   Connect to JunOS    #
+    #########################
+    config=str(JunOS_Connection().show())    #return self.dev_Connect.cli("show configuration")
 
-    r=str(JunOS_Connection().show())
-    #print r.replace("}")
-    #r.strip("{")
-    t=tkst.ScrolledText(frame, width=50, height=20)
-    t.grid(row=0, column=0)
-    t.insert("insert", r)
+    #########################
+    #   Create ScrolledText #
+    #########################
+    textarea=tkst.ScrolledText(root, width=50, height=20)
+    textarea.grid(row=0, column=0)
 
+    #########################
+    #   EMPTY TEXT AREA     #
+    #########################
+    textarea.delete(0.0, "end")     #### 0.0 = row0, column0
+                                    #### Specify which row to delete
+    #########################
+    #   Insert to Text Area #
+    #########################
+    textarea.insert("insert", config)
+
+    #########################
+    #   Write to Document   #
+    #########################
     with open("Configuration.config", "w") as text_file:
-        text_file.write(r)
+        text_file.write(config)
         text_file.close()
 
-    #t.delete(0,10)
+    ###Run Inter
     root.mainloop()
+
+####Run Program
+run=Log_box()

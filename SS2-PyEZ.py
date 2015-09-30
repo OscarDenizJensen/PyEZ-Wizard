@@ -28,7 +28,8 @@ class MainWindow(tk.Tk):
 
         #pages=()
 
-        for F in (StartPage, HostConf, MangConf, SysServ, Vlans,VRs, Interfaces,Protocols,Classes, Users, Firewalls):
+        for F in (StartPage, HostConf, MangConf, SysServ, Vlans,VRs, Interfaces,
+                  Protocols,Classes, Users, Firewalls,SaveConf):
 
             frame = F(self.container, self)
 
@@ -792,7 +793,7 @@ class Firewalls(tk.Frame):
         new_filter_button.grid(row=99, column=1, sticky="SW")
 
         #####Commit and Go to Next Page
-        button1 = tk.Button(self, text="Next: ROUTING PROTOCOLS", command=self.fw_Commit )
+        button1 = tk.Button(self, text="Next: SAVE CONFIGURATION", command=self.fw_Commit )
         button1.grid(row=100, column=0, sticky="SW", columnspan=3)
 
     #############
@@ -871,10 +872,55 @@ class Firewalls(tk.Frame):
         if len(self.filter_ent.get())!=0:
             JunOS_Connection().firewall(self,self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
                                         ,self.from_Ent2.get(),self.then_Ent.get())
-        controller.show_frame(StartPage)
+        controller.show_frame(SaveConf)
 
-#####################
-#   START PROGRAM   #
-#####################
+#########################
+#   SAVE CONFIGURATION  #
+#########################
+class SaveConf(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="SAVE CONFIGURATION", font=LARGE_FONT)
+        label.grid(row=0, column=0)
+
+        ##### FILE NAME
+        file_Name=tk.Label(self, text="File Name")  ###Label
+        file_Name.grid(row=1, column=0)
+
+        self.name_Ent=tk.Entry(self, width="15")    ###Entry
+        self.name_Ent.grid(row=1,column=1)
+
+        #####FILE TYPE
+        file_Type=tk.Label(self, text="Type")       ###Label
+        file_Type.grid(row=1, column=2)
+
+        self.type_Ent=tk.Entry(self,width="10")     ###Entry
+        self.type_Ent.grid(row=1, column=3)
+
+        #####Button to Save File to System
+        save_button=tk.Button(self, text="Save Config", command=self.save_Conf)
+        save_button.grid(row=2, column=0)
+
+        #####Navigation Button
+        button1 = tk.Button(self, text="Next: START PAGE",
+                            command=lambda: controller.show_frame(StartPage))
+        button1.grid(row=3, column=0)
+
+    #########################
+    #   SAVE FILE TO CONFIG #
+    #########################
+    def save_Conf(self):
+        #####Create File name
+        file_name=self.name_Ent.get()+"."+self.type_Ent.get() #####Combine Name + File Type
+
+        #####Get Config from JunOS as STR
+        config=str(JunOS_Connection().show())
+
+        #####Create File
+        with open(file_name, "w") as text_file:
+                text_file.write(config) ####Write to File
+                text_file.close()
+
 app = MainWindow()
 app.mainloop()
