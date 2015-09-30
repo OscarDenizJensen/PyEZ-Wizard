@@ -7,3 +7,6 @@ Added Firewall
 
 Name: Classes
 Change: Added Classes
+
+v2.10 Perma Log Boxes
+    Added Self Cleaning Log Boxes
