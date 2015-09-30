@@ -10,3 +10,6 @@ Change: Added Classes
 
 v2.10 Perma Log Boxes
     Added Self Cleaning Log Boxes
+
+v2.11 Save Config
+    Now can save config
