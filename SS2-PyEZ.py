@@ -218,8 +218,6 @@ class SysServ(tk.Frame):
     #   NTP SERVER INFO     #
     #########################
     def ntp(self,*args):
-        self.boot_Srv_List=[]
-        self.ntp_Srv_List=[]
 
         boot_Srv=tk.Label(self, text="Boot Server")
         boot_Srv.grid(row=4, column=1)
@@ -227,135 +225,109 @@ class SysServ(tk.Frame):
         ntp_Srv=tk.Label(self, text="Ntp Server")
         ntp_Srv.grid(row=5, column=1)
 
-        for x in range(4):
-                ###########Boot Server##############
-                boot_Srv_Add=tk.Entry(self,width=3)
-                boot_Srv_Add.grid(row=4, column=2+x)
-                self.boot_Srv_List.append(boot_Srv_Add)
-                ###########NTP Server###############
-                ntp_Srv_Add=tk.Entry(self,width=3)
-                ntp_Srv_Add.grid(row=5, column=2+x)
-                self.ntp_Srv_List.append(ntp_Srv_Add)
+        ###########Boot Server##############
+        self.boot_Ent=tk.Entry(self,width=15)
+        self.boot_Ent.grid(row=4, column=2)
+
+        ###########NTP Server###############
+        self.ntp_Ent=tk.Entry(self,width=15)
+        self.ntp_Ent.grid(row=5, column=2)
 
     ##################
     #   NTP COMMAND  #
     ##################
     def ntp_Command(self,*args):
-        JunOS_Connection().ntp(self.boot_Srv_List, self.ntp_Srv_List)
+        JunOS_Connection().ntp(self.boot_Ent.get(), self.ntp_Ent.get())
 
     ###########################
-    #   DHCP # OF Servers     #
-    #   NO COMMIT             #
+    #   DHCP SERVER INFO      #
     ###########################
     def dhcp(self,*args):
-        srv_Nbr=str(self.r+1)
-        #################################################
-        #   FIXED LABELS: Pool, /, Router, Low, High    #
-        #################################################
-        server_Label=tk.Label(self,text="DHCP"+srv_Nbr)
-        server_Label.grid(row=(6+4*self.r), column=1)
+        ##############POOL###############
+        server_Label=tk.Label(self,text="DHCP") ### DHCP Label
+        server_Label.grid(row=(6), column=1)
 
-        pool_Label=tk.Label(self,text="Pool")
-        pool_Label.grid(row=(6+4*self.r), column=2)
+        pool_Label=tk.Label(self,text="Pool")   ###Label
+        pool_Label.grid(row=(6), column=2)
+
+        self.pool_Ent=tk.Entry(self,width=15)   ###Entry
+        self.pool_Ent.grid(row=6, column=3)
 
         pool_Filler=tk.Label(self,text="/")
-        pool_Filler.grid(row=6+4*self.r, column=6)
+        pool_Filler.grid(row=6, column=4)
 
-        router_label=tk.Label(self, text="Router")
-        router_label.grid(row=7+4*self.r, column=2)
+        self.CDR=tk.Entry(self,width=2)     ###CDR Entry
+        self.CDR.grid(row=6, column=5)
 
-        low_Label= tk.Label(self,text="Low")
-        low_Label.grid(row=(8+4*self.r), column=2)
+        #############ROUTER###############
+        router_label=tk.Label(self, text="Router")  ###Label
+        router_label.grid(row=7, column=2)
 
-        high_Label= tk.Label(self,text="High")
-        high_Label.grid(row=(9+4*self.r), column=2)
+        self.router_Ent=tk.Entry(self, width="15")       ###Entry
+        self.router_Ent.grid(row=7, column=3)
 
-        self.router_List=[]
-        self.add_Range_List=[]
+        ##############LOW################
+        low_Label= tk.Label(self,text="Low")        ###Label
+        low_Label.grid(row=8, column=2)
 
-        ##################
-        #   Entry Fields #
-        ##################
-        for x in range(4):
-            ###########POOL####################
-            pool_Add=tk.Entry(self,width=3)
-            pool_Add.grid(row=6+4*self.r, column=3+x)
-            self.router_List.append(pool_Add)
-            self.add_Range_List.append(pool_Add)
+        self.low_Ent=tk.Entry(self, width="15")          ###Entry
+        self.low_Ent.grid(row=8, column=3)
 
-        pool_CDR=tk.Entry(self,width=2)
-        pool_CDR.grid(row=6+4*self.r, column=7)
-        self.router_List.append(pool_CDR)
-        self.add_Range_List.append(pool_CDR)
+        ##############HIGH##############
+        high_Label= tk.Label(self,text="High")      ###Label
+        high_Label.grid(row=(9), column=2)
 
-            ###########DHCP ROUTER##############
-        for x in range(4):
-            router_Address1=tk.Entry(self,width=3)
-            router_Address1.grid(row=(7+4*self.r), column=3+x)
-            self.router_List.append(router_Address1)
+        self.high_Ent=tk.Entry(self, width="15")         ###Entry
+        self.high_Ent.grid(row=9, column=3)
 
-            ###########LOW ADDRESS##############
-        for x in range(4):
-            low_Address1=tk.Entry(self,width=3)
-            low_Address1.grid(row=(8+4*self.r), column=3+x)
-            self.add_Range_List.append(low_Address1)
-
-            ###########HIGHT ADDRESSS###########
-        for x in range(4):
-            high_Address1=tk.Entry(self,width=3)
-            high_Address1.grid(row=(9+4*self.r), column=3+x)
-            self.add_Range_List.append(high_Address1)
-
-        new_Srv_But=tk.Button(self,text="New Server", command=self.dhcp_combi)
-        new_Srv_But.grid(row=(9+4*self.r), column=9)
-
-    ###############################################
-    #   CREATE DHCP SERVERS & COMMIT PREVIOUS ONE #
-    ###############################################
-    def dhcp_combi(self, *args):
-        self.r+=1
-        check=self.router_List[0].get()
-        if len(check)!=0:
-            self.dhcp_Command(self.router_List, self.add_Range_List)
-            self.dhcp()
+        ############DHCP COMMIT BUTTON##################
+        dhcp_Commit_But=tk.Button(self,text="Commit", command= self.dhcp_Command)
+        dhcp_Commit_But.grid(row=9, column=5)
 
     ###########################
     #   DHCP FINAL COMMAND    #
     ###########################
     def dhcp_Command(self,*args):
-        JunOS_Connection().dhcp(self.router_List, self.add_Range_List)
+        JunOS_Connection().dhcp(self.pool_Ent.get(),self.CDR.get(),self.router_Ent.get(),
+                                self.low_Ent.get(), self.high_Ent.get())
+        self.pool_Ent.delete(0,"end")
+        self.CDR.delete(0,"end")
+        self.router_Ent.delete(0,"end")
+        self.low_Ent.delete(0,"end")
+        self.high_Ent.delete(0,"end")
 
-    #########################
-    #   ALL COMMIT COMMAND  #
-    #########################
+    ###########################
+    ###########################
+    ##   ALL SYSTEM COMMITS  ##
+    ###########################
+    ###########################
     def commit_SysServ(self,**kwargs):
         controller=self.controller
 
-        ######Commit SSH
+        ######Commit SSH########
         ssh_Value=self.ssh_Var.get()
         if ssh_Value==1:
             self.ssh()
 
-        ######Commmit TELNET
+        ######Commmit TELNET####
         telnet_Value=self.telnet_Var.get()
         if telnet_Value==1:
             self.telnet()
 
-        ######Commit FTP
+        ######Commit FTP########
         ftp_Value=self.ftp_Var.get()
         if ftp_Value==1:
             self.ftp()
 
-        ######Commit NTP
+        ######Commit NTP########
         ntp_Value=self.ntp_Var.get()
         if ntp_Value==1:
             self.ntp_Command()
 
-        ######Commit DHCP
+        ######Commit DHCP#######
         dhcp_Value=self.dhcp_Var.get()
         if dhcp_Value==1:
             self.dhcp_Command()
-        #lambda: controller.show_frame(Vlans)
 
         controller.show_frame(Vlans)
 
@@ -370,67 +342,43 @@ class Vlans(tk.Frame):
         label.grid(row=0, column=0, columnspan=4)
         self.controller=controller
 
-        self.vlan_Row=0 #####Variable to use dynamic rows with grid
-        self.vlan()     #####Load TkInter and Etnry Fields
-
-        button1 = tk.Button(self, text="Next: VIRTUAL ROUTERS", command=self.commit)
-        button1.grid(row=100, column=0, columnspan=4, sticky="W")
-    #######################
-    #   GET VLAN FIELDS   #
-    #######################
-    def vlan(self,*args):
-        self.vlan_List=[]
-        self.vlan_Int_List=[]
-        ###########Vlan NAME and ENTRY
+        ###########Vlan NAME#############
         vlan_Name=tk.Label(self, text="Name")
-        vlan_Name.grid(row=1+(self.vlan_Row*2), column=1)
+        vlan_Name.grid(row=1, column=1)
 
-        vlan_Name_Entry=tk.Entry(self, width="8")
-        vlan_Name_Entry.grid(row=1+(self.vlan_Row*2), column=2, sticky="W",pady=5)
-        self.vlan_List.append(vlan_Name_Entry)
-        self.vlan_Int_List.append(vlan_Name_Entry)
-        ##########VLAN ID and ENTRY
+        self.name_Entry=tk.Entry(self, width="8")
+        self.name_Entry.grid(row=1, column=2, sticky="W",pady=5)
+
+        ##########VLAN ID##################
         vlan_ID=tk.Label(self, text="VLAN ID")
-        vlan_ID.grid(row=1+(self.vlan_Row*2), column=3)
+        vlan_ID.grid(row=1, column=3)
 
-        vlan_ID_Entry=tk.Entry(self, width=5)
-        vlan_ID_Entry.grid(row=1+(self.vlan_Row*2), column=4)
-        self.vlan_List.append(vlan_ID_Entry)
+        self.ID_Entry=tk.Entry(self, width=5)
+        self.ID_Entry.grid(row=1, column=4)
         ##########INTERFACE and ENTRY
-        vlan_int=tk.Label(self,text="Interface")
-        vlan_int.grid(row=1+(self.vlan_Row*2), column=5)
+        interface=tk.Label(self,text="Interface")
+        interface.grid(row=1, column=5)
 
-        vlan_int_Entry=tk.Entry(self, width=10)
-        vlan_int_Entry.grid(row=1+(self.vlan_Row*2), column=6)
-        self.vlan_Int_List.append(vlan_int_Entry)
+        self.int_Entry=tk.Entry(self, width=10)
+        self.int_Entry.grid(row=1, column=6)
 
+        ##########CREATE DHCP
+        vlan_Button=tk.Button(self,text="Add New Interface", command=self.vlan_Command)
+        vlan_Button.grid(row=1, column=7, columnspan=3)
 
-        vlan_Button=tk.Button(self,text="Add New Interface", command=self.combi)
-        vlan_Button.grid(row=1+(self.vlan_Row*2), column=7, columnspan=3)
+        ##########NAVIGATE TO NEXT PAGE
+        button1 = tk.Button(self, text="Next: VIRTUAL ROUTERS", command=lambda:controller.show_frame(VRs))
+        button1.grid(row=2, column=0, columnspan=4, sticky="W")
+
 
     #######################
     #   VLAN COMMANDLINE  #
     #######################
-    def vlan_Command(self,add_Vlan,add_Interface):
-        JunOS_Connection().vlan_Command(self.vlan_List, self.vlan_Int_List)
-
-    #########################
-    # IMPORT VLAN COMMANDS  #
-    #########################
-    def combi(self,*args):
-        self.vlan_Row+=1
-        check=self.vlan_List[0].get()
-        if len(check)!=0:
-            self.vlan_Command(self.vlan_List, self.vlan_Int_List)
-            self.vlan()
-
-    #####################################
-    #   COMMIT VLAN AND GO TO NEXT PAGE #
-    #####################################
-    def commit(self,**kwargs):
-        controller=self.controller
-        self.vlan_Command(self.vlan_List, self.vlan_Int_List)
-        controller.show_frame(VRs)
+    def vlan_Command(self):
+        JunOS_Connection().vlan_Command(self.name_Entry.get(),self.ID_Entry.get(),self.int_Entry.get())
+        self.name_Entry.delete(0,"end")
+        self.ID_Entry.delete(0,"end")
+        self.int_Entry.delete(0,"end")
 
 #########################
 #   VIRTUAL ROUTERS     #
@@ -534,13 +482,12 @@ class Interfaces(tk.Frame):
     #########################
     #      IPv4 Commit      #
     #########################
-
     def v4commit(self, *args):
         JunOS_Connection().ipV4(self.v4ent.get(),self.interent.get(), self.unitent.get(),self.v4maskent.get())
+
     #########################
     #      IPv6 Commit      #
     #########################
-
     def v6commit(self, *args):
         JunOS_Connection().ipV6(self.v6ent.get(),self.interent.get(), self.unitent.get(),self.v6maskent.get())
 
@@ -670,36 +617,36 @@ class Classes(tk.Frame):
         label = tk.Label(self, text="CLASSES", font=LARGE_FONT)
         label.grid(row=0, column=0, columnspan=3)
 
-        #####CLASS NAME
+        ##########CLASS NAME###################
         name=tk.Label(self, text="Name")
         name.grid(row=1, column=0)
 
         self.name_Ent=tk.Entry(self, width="15")
         self.name_Ent.grid(row=1, column=1)
 
-        ######CLASS ACTION
-        action=tk.Label(self, text="Action")
+        ##########CLASS PREVILAGE###############
+        action=tk.Label(self, text="Previlage")
         action.grid(row=1,column=2)
 
         self.action_Ent=tk.Entry(self, width="15")
         self.action_Ent.grid(row=1, column=3)
 
-        #######ACTION DETAIL
+        ##########PREVILAGE DETAIL##############
         self.det_Ent=tk.Entry(self, width="15")
         self.det_Ent.grid(row=1, column=4)
 
-        #######NEW CLASS BUTTON
+        ##########CLASS COMMIT BUTTON############
         class_Button=tk.Button(self, text="New Class/Actions", command=self.classes)
         class_Button.grid(row=2, column=0)
 
-        #######NEXT PAGE BUTTON
+        ##########NAVIGATE TO NEXT PAGE##########
         button1 = tk.Button(self, text="Next: USERS",
                                 command=lambda: controller.show_frame(Users))
         button1.grid(row=10, column=0)
-     #################
-     #   NEW CLASS   #
-     #################
 
+     ####################
+     #   CLASS COMMAND  #
+     ####################
      def classes(self):
         JunOS_Connection().classes(self.name_Ent.get(),self.action_Ent.get(),self.det_Ent.get())
         self.name_Ent.delete(0,"end")

@@ -43,49 +43,39 @@ class JunOS_Connection():
 
     def ntp(self,boot,ntp):
         ###########Boot Server Command###########
-        boot_Srv_List=[]
-        for x in boot:
-            boot_Srv_List.append(x.get())
-        if len(boot_Srv_List[0])!=0:
-            boot="set system ntp boot-server %s.%s.%s.%s" % tuple(boot_Srv_List)
+        if len(boot[0])!=0:
+            boot="set system ntp boot-server %s" % boot
             self._conf_JunOS.load(boot, format='set')
             ###########NTP Server Command###########
-            ntp_Srv_List=[]
-            for x in ntp:
-                ntp_Srv_List.append(x.get())
-            ntp="set system ntp server %s.%s.%s.%s" % tuple(ntp_Srv_List)
+            ntp="set system ntp server %s" % ntp
             self._conf_JunOS.load(ntp, format='set')
 
             self._conf_JunOS.commit()
 
-    def dhcp(self,router,add_range):
-        router_List=[]
-        for x in router:
-            router_List.append(x.get())
+    def dhcp(self,pool, cdr, router,low, high):
+        router_List=[pool, cdr, router]
 
-        self.dhcp_router=("set system services dhcp pool %s.%s.%s.%s/%s router %s.%s.%s.%s") % tuple(router_List)
+        self.dhcp_router=("set system services dhcp pool %s/%s router %s") % tuple(router_List)
         self._conf_JunOS.load(self.dhcp_router, format='set')
 
-        address_Range_List=[]
-        for x in add_range:
-            address_Range_List.append(x.get())
-        self.dhcp_add_Range=("set system services dhcp pool %s.%s.%s.%s/%s address-range low %s.%s.%s.%s "
-                             "high %s.%s.%s.%s") % tuple(address_Range_List)
+        address_Range_List=[pool, cdr, low, high]
+        self.dhcp_add_Range=("set system services dhcp pool %s/%s address-range low %s "
+                             "high %s") % tuple(address_Range_List)
         self._conf_JunOS.load(self.dhcp_add_Range, format='set')
 
         self._conf_JunOS.commit()
         print "DHCP SERVER CREATED"
 
-    def vlan_Command(self,add_Vlan,add_Interface):
-        set_Vlan=[]
-        for x in add_Vlan:
-            set_Vlan.append(x.get())
-        print "set vlans %s vlan-id %s" % tuple(set_Vlan)
-
-        set_Interface=[]
-        for x in add_Interface:
-            set_Interface.append(x.get())
-        print "set vlans %s interface %s" % tuple(set_Interface)
+    def vlan_Command(self,name, id , interface):
+        set_vlan=[name,id]
+        if len(interface)==0:
+            if len(id)==0:
+                print("Err")
+            else:
+                print "set vlans %s vlan-id %s" % tuple(set_vlan)
+        else:
+            set_Interface=[name,id,interface]
+            print "set vlans %s vlan-id %s interface %s" % tuple(set_Interface)
 
     def vr(self,vr_var,int_var,unit_var):
         ## Create first VR command ##
