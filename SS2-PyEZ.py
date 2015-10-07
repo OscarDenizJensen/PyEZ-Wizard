@@ -733,14 +733,15 @@ class Firewalls(tk.Frame):
         self.terms()
 
         #####BUttons to CLear Field and Get new Info
-        new_term_button=tk.Button(self,text="New Term",command=self.new_Term)
+        new_term_button=tk.Button(self,text="Commit Term",command=self.new_Term)
         new_term_button.grid(row=99, column=0, sticky="SW")
 
-        new_filter_button=tk.Button(self,text="New Filter", command=self.new_Filter)
+        new_filter_button=tk.Button(self,text="Commit Filter", command=self.new_Filter)
         new_filter_button.grid(row=99, column=1, sticky="SW")
 
         #####Commit and Go to Next Page
-        button1 = tk.Button(self, text="Next: SAVE CONFIGURATION", command=self.fw_Commit )
+        button1 = tk.Button(self, text="Next: SAVE CONFIGURATION",
+                            command= lambda: controller.show_frame(SaveConf))
         button1.grid(row=100, column=0, sticky="SW", columnspan=3)
 
     #############
@@ -799,27 +800,24 @@ class Firewalls(tk.Frame):
         JunOS_Connection().firewall(self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
                                     ,self.from_Ent2.get(),self.then_Ent.get())
         #####CLEAR FIELDS UP TO TERM
-        self.new_From()
-        self.name_Ent.delete(0, 'end')
+        self.from_Ent.delete(0, 'end')
+        self.from_Ent2.delete(0, 'end')
+        self.then_Ent.delete(0, 'end')
+        self.term_Ent.delete(0, 'end')
 
     #################
     #   NEW FILTER  #
     #################
     def new_Filter(self):
         #####Commit
-        JunOS_Connection().firewall(self,self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
+        JunOS_Connection().firewall(self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
                                     ,self.from_Ent2.get(),self.then_Ent.get())
         ######Empty All Fields
-        self.new_Term()
+        self.from_Ent.delete(0, 'end')
+        self.from_Ent2.delete(0, 'end')
+        self.then_Ent.delete(0, 'end')
+        self.term_Ent.delete(0, 'end')
         self.filter_ent.delete(0,"end")
-
-
-    def fw_Commit(self, **kwargs):
-        controller=self.controller
-        if len(self.filter_ent.get())!=0:
-            JunOS_Connection().firewall(self,self.filter_ent.get(),self.term_Ent.get(),self.from_Ent.get()
-                                        ,self.from_Ent2.get(),self.then_Ent.get())
-        controller.show_frame(SaveConf)
 
 #########################
 #   SAVE CONFIGURATION  #

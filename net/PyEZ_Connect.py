@@ -1,8 +1,6 @@
 from jnpr.junos import Device
 from jnpr.junos.utils.config import Config
 
-#hostname= "Ozzy"
-
 class JunOS_Connection():
     def __init__(self):
         self.dev_Connect = Device(host='192.168.56.2', user='root', password='Juniper1')
